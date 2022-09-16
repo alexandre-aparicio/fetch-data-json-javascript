@@ -1,77 +1,87 @@
-const form = document.querySelector('#input-form');
-const out = document.querySelector('#candidato');
-
+    
+const out = document.querySelector('#seccionRedes');
 const http = new TMhttp;
-
-http.get('../../PAGINA/OTRO/src/app/Controllers/candidatos.php')
-	.then(data => {
-		console.log(data)
-		let outText = '';
-		data.more.forEach(item => {
-			outText += `
-                <ul>
-                    <li>${ item.nombre } ${ item.apellidos }
-                        <ul id="ofertas-${item.idCandidato}"></ul>
-                    </li>
-                </ul>`
-			out.innerHTML = outText;
-			pepe(item.idCandidato)
-
-		});
-	})
-	.catch(err => console.log(err));
-e.preventDefault();
-
-function pepe(data) {
-	const http2 = new TMhttp;
-
-	http2.get('../../PAGINA/OTRO/src/app/Controllers/candidato_ofertas.php')
-		.then(data2 => {
-			const off = document.querySelector('#ofertas-' + data + '');
-			let oferta = data2.more.filter(ofer => ofer.id_candidato === data);
-
-			let offText = '';
-			off.innerHTML = oferta.forEach(item => {
-				offText += 
-				`
-                <li>${ item.oferta } </li>
-                `
-
-			});
-			off.innerHTML = offText;
-		})
-		.catch(err => console.log(err));
-}
-
-const getOfer = document.querySelector('#btn-get-ofer').addEventListener('click', (e) => {
-	
-	const http = new TMhttp;
-	http.get('../../PAGINA/OTRO/src/app/Controllers/ofertas.php')
-		.then(data => {
-
-			const oferta = document.querySelector('#ofertas');
-			let ofertasText = '<label for="cars">Choose a car:</label><select name="ofertas" id="oferta">';
-			data.more.forEach(item => {
-
-
-				ofertasText += `<option value="${item.id_cont}">${item.oferta}</option>`;
-			})
-			ofertasText += `</select><div id="campoOfertas">`;
-			oferta.innerHTML = ofertasText;
-
-			var select = document.querySelector("#oferta");
-			select.addEventListener('change', capturarValor);
-
-			function capturarValor() {
-				var valor = select.value;
-				var pepe = document.querySelector("#campoOfertas");
-				let oferta = data.valor.filter(ofer => ofer.id_cont === data);
-				pepe.innerHTML = oferta.oferta;
-				console.log(data)
-				console.log(valor);
-			}
-
-		})
-		.catch(err => console.log(err));
-	e.preventDefault();
-});
+http.get('js/data.js')
+    .then(data => {
+        let outText = '';
+        data.more.forEach(item => {
+            outText+= `
+                <div class="col-lg-4 col-xs-12 text-center">
+				    <div class="box">
+				        <div class="accordion">
+				            <i class="fa fa-plus-square fa-1x" id="ver-redes-${item.idCard}" onclick="myFunction(${item.idCard})"  aria-hidden="true"></i>
+				        </div>
+                        <i class="fa ${item.icono} fa-3x" aria-hidden="true"></i>
+					    <div class="box-title">
+						    <h3>${item.nombre}</h3>
+					    </div>
+					    <div class="box-text">
+						    <span>${item.descripcion}</span>
+					    </div>
+					    
+					    <div id="oculto-${item.idCard}" style="display:none"></div>
+				    </div>
+			    </div>`
+            out.innerHTML = outText;
+        });
+    })
+    .catch(err => console.log(err));
+ 
+ function myFunction(id) {
+                
+                var oculto = document.querySelector('#oculto-' + id + '');
+                const http = new TMhttp;
+http.get('js/data_des.js')
+    .then(data => {
+       const pepe = document.querySelector('#ver-redes-' + id + '');    
+       
+                
+        if (oculto.style.display === "none") {
+            oculto.style.display = "block";
+            pepe.classList.replace("fa-plus-square", "fa-minus-square");
+            outText = "";
+            let oferta = data.more.filter(ofer => ofer.idCard == id);
+            console.log(oferta)
+            if (oferta.length > 0) {
+            oferta.forEach(item => {
+                
+                
+            outText  += `
+                
+			<div class="d-flex flex-row border rounded espacio">
+	  			<div class="p-0 w-25">
+	  			    <img src="${item.imagen}" class="img-thumbnail border-0" />
+	  				
+	  			</div>
+	  			<div class="pl-3 pt-2 pr-2 pb-2 w-75 border-left">
+	  					<h6 class="text-primary">${item.cuenta}</h6>
+	  					<div class="box-btn">
+	  					<a href="${item.enlace}"><button type="button" class="btn btn-outline-primary">Ver mas</button></a>
+					        
+					    </div>
+	  					
+						
+				</div>
+			</div>
+		
+                    `;
+                    
+            }) } else {
+                outText  += `<div class="d-flex flex-row border rounded azul">No hay datos que mostrar</div>`;
+            }
+            oculto.innerHTML = outText;
+            
+    } else {
+        oculto.style.display = "none";
+        pepe.classList.replace("fa-minus-square", "fa-plus-square");
+    }
+    });
+                    
+                   
+                
+                
+       
+       console.log("He apretado - " + id);
+            }
+            
+           
